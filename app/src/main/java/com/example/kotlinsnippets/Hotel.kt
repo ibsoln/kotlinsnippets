@@ -1,4 +1,4 @@
-package com.example.kotlinapisnippets
+package com.example.kotlinsnippets
 
 class Hotel {
     var id = ""

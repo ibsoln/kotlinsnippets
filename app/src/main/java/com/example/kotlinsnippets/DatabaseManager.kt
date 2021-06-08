@@ -1,4 +1,4 @@
-package com.example.kotlinapisnippets
+package com.example.kotlinsnippets
 
 import android.content.Context
 import android.util.Log
@@ -119,7 +119,7 @@ class DatabaseManager {
         }
         val db = openOrCreateDatabaseForUser(currentUser)
 
-        val hotel = com.example.kotlinapisnippets.Hotel()
+        val hotel = com.example.kotlinsnippets.Hotel()
 
         val hotels: HashMap<String, Hotel> = HashMap<String, Hotel>()
         val id = arrayOf("1000", "1001", "1002")

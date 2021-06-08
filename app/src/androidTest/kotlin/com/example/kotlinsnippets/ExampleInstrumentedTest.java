@@ -1,4 +1,4 @@
-package com.example.kotlinapisnippets;
+package com.example.kotlinsnippets;
 
 import android.content.Context;
 

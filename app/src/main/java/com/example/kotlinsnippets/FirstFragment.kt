@@ -1,4 +1,4 @@
-package com.example.kotlinapisnippets
+package com.example.kotlinsnippets
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.couchbase.lite.CouchbaseLiteException
-import com.example.kotlinapisnippets.databinding.FragmentFirstBinding
+import com.example.kotlinsnippets.databinding.FragmentFirstBinding
 import org.json.JSONException
 
 class FirstFragment : Fragment() {

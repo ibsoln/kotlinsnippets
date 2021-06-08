@@ -1,4 +1,4 @@
-package com.example.kotlinapisnippets
+package com.example.kotlinsnippets
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
-import com.example.kotlinapisnippets.databinding.FragmentSecondBinding
+import com.example.kotlinsnippets.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
     private var binding: FragmentSecondBinding? = null
