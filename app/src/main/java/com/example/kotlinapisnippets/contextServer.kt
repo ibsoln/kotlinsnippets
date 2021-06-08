@@ -1,4 +1,4 @@
-package com.example.jsonapisnippets
+package com.example.kotlinapisnippets
 
 import android.app.Application
 import android.content.Context

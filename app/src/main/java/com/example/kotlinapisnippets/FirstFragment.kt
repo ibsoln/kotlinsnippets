@@ -1,4 +1,4 @@
-package com.example.jsonapisnippets
+package com.example.kotlinapisnippets
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.couchbase.lite.CouchbaseLiteException
-import com.example.jsonapisnippets.databinding.FragmentFirstBinding
+import com.example.kotlinapisnippets.databinding.FragmentFirstBinding
 import org.json.JSONException
 
 class FirstFragment : Fragment() {
@@ -23,11 +23,11 @@ class FirstFragment : Fragment() {
     }
 
     fun runQueries() {
-        val dbm: DatabaseManager = DatabaseManager.Companion.getSharedInstance()
+        val dbm: DatabaseManager? = DatabaseManager.Companion.sharedInstance
         try {
-            dbm.seedDatabase()
-            dbm.testQuerySyntaxCount()
-            dbm.testQuerySyntaxJson()
+            dbm?.seedDatabase()
+            dbm?.testQuerySyntaxCount()
+            dbm?.testQuerySyntaxJson()
         } catch (e: CouchbaseLiteException) {
             e.printStackTrace()
         } catch (e: JSONException) {

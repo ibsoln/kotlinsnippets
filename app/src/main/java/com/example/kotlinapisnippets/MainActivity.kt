@@ -1,4 +1,4 @@
-package com.example.jsonapisnippets
+package com.example.kotlinapisnippets
 
 import android.os.Bundle
 import android.view.Menu
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.example.jsonapisnippets.databinding.ActivityMainBinding
+import com.example.kotlinapisnippets.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
