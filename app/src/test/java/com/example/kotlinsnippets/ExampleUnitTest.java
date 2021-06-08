@@ -1,4 +1,4 @@
-package com.example.jsonapisnippets;
+package com.example.kotlinsnippets;
 
 import org.junit.Test;
 

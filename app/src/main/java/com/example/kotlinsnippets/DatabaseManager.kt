@@ -1,4 +1,4 @@
-package com.example.jsonapisnippets
+package com.example.kotlinsnippets
 
 import android.content.Context
 import android.util.Log
@@ -119,8 +119,9 @@ class DatabaseManager {
         }
         val db = openOrCreateDatabaseForUser(currentUser)
 
-//        Hotel hotel = new Hotel();
-        val hotels: HashMap<String?, Hotel?> = HashMap<Any?, Any?>()
+        val hotel = com.example.kotlinsnippets.Hotel()
+
+        val hotels: HashMap<String, Hotel> = HashMap<String, Hotel>()
         val id = arrayOf("1000", "1001", "1002")
         val name = arrayOf("Ted", "Fred", "Ned")
         val city = arrayOf("Paris", "London", "Sydney")
@@ -209,7 +210,7 @@ class DatabaseManager {
         // end::query-syntax-all[]
 
         // tag::query-access-all[]
-        val hotels: HashMap<String?, Hotel?> = HashMap<Any?, Any?>()
+        val hotels: HashMap<String, Hotel> = HashMap<String, Hotel>()
         try {
             for (result in listQuery.execute().allResults()) {
                 // get the k-v pairs from the 'hotel' key's value into a dictionary
@@ -221,12 +222,12 @@ class DatabaseManager {
 
                 // Alternatively, access results value dictionary directly
                 val hotel = Hotel()
-                hotel.id = result.getDictionary(0)!!.getString("id") // <.>
-                hotel.type = result.getDictionary(0)!!.getString("type")
-                hotel.name = result.getDictionary(0)!!.getString("name")
-                hotel.city = result.getDictionary(0)!!.getString("city")
-                hotel.country = result.getDictionary(0)!!.getString("country")
-                hotel.description = result.getDictionary(0)!!.getString("description")
+                hotel.id = result.getDictionary(0)!!.getString("id").toString() // <.>
+                hotel.type = result.getDictionary(0)!!.getString("type").toString()
+                hotel.name = result.getDictionary(0)!!.getString("name").toString()
+                hotel.city = result.getDictionary(0)!!.getString("city").toString()
+                hotel.country = result.getDictionary(0)!!.getString("country").toString()
+                hotel.description = result.getDictionary(0)!!.getString("description").toString()
                 hotels[hotel.id] = hotel
             }
         } catch (e: CouchbaseLiteException) {
@@ -308,7 +309,7 @@ class DatabaseManager {
         private var currentUser = setCurrentUser("ian")
         private const val dbName = "hotels"
         private var couchbaseInitialized = false
-        private var ctxt: Context? = contextServer.Companion.getAppContext()
+        private var ctxt: Context? = contextServer.Companion.appContext
         val sharedInstance: DatabaseManager?
             get() {
                 if (instance == null) {
@@ -323,6 +324,6 @@ class DatabaseManager {
     }
 
     init {
-        ctxt = contextServer.Companion.getAppContext()
+        ctxt = contextServer.Companion.appContext
     }
 }
