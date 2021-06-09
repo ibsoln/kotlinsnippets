@@ -4,14 +4,18 @@ import android.content.Context
 import android.util.Log
 import com.couchbase.lite.*
 import com.couchbase.lite.Function
+import com.couchbase.lite.Dictionary as CBL
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
+import java.util.Dictionary
 import kotlin.Any
 import kotlin.String
 import kotlin.Throws
 import kotlin.arrayOf
+import kotlin.collections.HashMap
 import kotlin.toString
+
 
 //package com.couchbase.userprofile.util;
 //import MyApp;
@@ -29,6 +33,7 @@ class DatabaseManager {
 
     // end::initCouchbaseLite[]
     // tag::userProfileDocId[]
+
     val currentUserDocId: String
         get() = "user::" + Companion.currentUser
 
@@ -41,6 +46,9 @@ class DatabaseManager {
     // tag::openOrCreateDatabase[]
     fun openOrCreateDatabaseForUser(username: String?): Database? // end::openOrCreateDatabase[]
     {
+        if(!couchbaseInitialized) {initCouchbaseLite(ctxt)}
+
+
         // tag::databaseConfiguration[]
         val config = DatabaseConfiguration()
         config.directory = String.format("%s/%s", ctxt!!.filesDir, username)
@@ -96,6 +104,8 @@ class DatabaseManager {
         } catch (e: CouchbaseLiteException) {
             e.printStackTrace()
         }
+
+        Log.d("close", "what happened" )
     }
 
     // tag::deregisterForDatabaseChanges[]
@@ -107,6 +117,9 @@ class DatabaseManager {
             // end::removedbchangelistener[]
         }
     }
+
+
+
 
     @Throws(JSONException::class)
     fun seedDatabase() {
@@ -193,14 +206,17 @@ class DatabaseManager {
             e.printStackTrace()
         }
         // end::query-access-count-only[]
+
+        closeDatabaseForUser()
+
     }
 
     @Throws(CouchbaseLiteException::class)
-    fun testQuerySyntaxAll() {
+    fun testQuerySyntaxAll() : HashMap<String,Hotel> {
 
         // tag::query-syntax-all[]
 //        try {
-//            this_Db = new Database("hotels");
+//            db = new Database("hotels");
 //        } catch (CouchbaseLiteException e) {
 //            e.printStackTrace();
 //        }
@@ -234,11 +250,15 @@ class DatabaseManager {
             e.printStackTrace()
         }
 
+        return hotels
+
+//        closeDatabaseForUser()
+
         // end::query-access-all[]
     }
 
     @Throws(CouchbaseLiteException::class, JSONException::class)
-    fun testQuerySyntaxJson() {
+    fun testQuerySyntaxJson(): ArrayList<Hotel> {
         val db = openOrCreateDatabaseForUser(currentUser)
         // tag::query-syntax-all[]
         // Example assumes Hotel class object defined elsewhere
@@ -294,13 +314,113 @@ class DatabaseManager {
         }
 
         // end::query-access-json[]
+        return hotels
+//        closeDatabaseForUser()
     }
+
+
+    @Throws(CouchbaseLiteException::class)
+    fun getHotelIdByName(parHotel: String) : String? {
+        // tag::query-syntax-id[]
+//        try {
+//            db = Database("hotels")
+//        } catch (e: CouchbaseLiteException) {
+//            e.printStackTrace()
+//        }
+
+        var returnId = ""
+        val db = openOrCreateDatabaseForUser(currentUser)
+        val listQuery: Query = QueryBuilder.select(SelectResult.expression(Meta.id).`as`("metaID")).from(DataSource.database(db!!))
+
+//            .where(Expression.property("name").equalTo(Expression.string(parHotel)))
+
+        // end::query-syntax-id[]
+
+
+        // tag::query-access-id[]
+
+        try {
+            var rs = listQuery.execute().allResults()
+            for (result in rs) {
+                var me = result.getString("metaID")
+                Log.d("JSONAPI: ", "getHotelByName: ${result.getString("name")} : ${result.getString("metaID")} : ${result.getString("Meta.id")}")
+                returnId = result.getString("metaID").toString()
+//                return thisId
+
+            }
+        } catch (e: CouchbaseLiteException) {
+            e.printStackTrace()
+        }
+
+        return returnId
+//        db?.close()
+        // end::query-access-id[]
+    }
+
 
     @Throws(CouchbaseLiteException::class)
     private fun deleteDB() {
         val db = openOrCreateDatabaseForUser(currentUser)
-        db!!.delete()
+//        if (db) {
+//            db!!.delete()
+//        }
     }
+
+
+    @Throws(CouchbaseLiteException::class, JSONException::class)
+    fun useJSONAPImethods() {
+
+        var tag = "JSONAPI: "
+
+        seedDatabase()
+
+
+        var myHotels = testQuerySyntaxAll()
+
+//        openOrCreateDatabaseForUser("ian")
+
+//        var db = Database("hotels")
+
+//        var numrecs = db.count
+
+//        Log.d(tag, "Total hotels returned = ${numrecs.toString()}")
+
+// 2.2
+        var hotelId = getHotelIdByName("Hotel Ted").toString()
+
+        // 2.2 Get document as json string
+        var db = openOrCreateDatabaseForUser("ian")
+        var jsonString = db?.getDocument(hotelId)?.toJSON() // <.>
+        Log.d(tag, "JSON String document: ${jsonString}")
+
+        // 2.2 Get document as native dictionaryg
+//        var docHotel = db.getDocument(hotelId)
+//        var dictHotel = docHotel?.toMap()
+
+        // Get Json object from JSON string
+        var jsonObject = JSONObject(jsonString) // <.>
+
+        // Get json object into native dictionary
+        var keys = jsonObject.keys()
+        val jsonDict = HashMap<String, Any>()
+        while (keys.hasNext()) { /* <.> */
+            val key = keys.next()
+            jsonDict[key] = jsonObject[key]
+        }
+        Log.d(tag, "Native dictionary from JSON: ${jsonDict.toString()}")
+
+        // Get CBL Dictionary from JSON
+        var dictionaryFromJSON = MutableDictionary().setJSON(jsonString.toString())
+        Log.d(tag, "CouchbaseLite Dictionary from JSON: ${dictionaryFromJSON}")
+
+        // Get JSON from CBL Dictionary
+        var jsonFromDictionary = dictionaryFromJSON.toJSON()
+        Log.d(tag, "JSON from CouchbaseLite Dictionary: ${jsonFromDictionary}")
+
+//        closeDatabaseForUser()
+
+    }
+
 
     companion object {
         var database: Database? = null
@@ -326,4 +446,4 @@ class DatabaseManager {
     init {
         ctxt = contextServer.Companion.appContext
     }
-}
+} // End of Class
